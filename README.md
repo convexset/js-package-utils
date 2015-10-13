@@ -1,5 +1,11 @@
 # PackageUtils
 
+## Install
+
+This is available as [`convexset:package-utils`](https://atmospherejs.com/convexset/package-utils) on [Atmosphere](https://atmospherejs.com/). (Install with `meteor add convexset:package-utils`.)
+
+## Usage
+
 `addImmutablePropertyValue(o, name, value)`
 
 Adds a "value" property to an object via `Object.defineProperty`.
