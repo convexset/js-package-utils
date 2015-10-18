@@ -10,6 +10,10 @@ This is available as [`convexset:package-utils`](https://atmospherejs.com/convex
 
 Adds a "value" property to an object via `Object.defineProperty`.
 
+`addPropertyGetter(o, name, fn)`
+
+Adds a getter.
+
 `addImmutablePropertyFunction(o, name, fn)`
 
 Adds a "function" property to an object via `Object.defineProperty` (actually done the same way as for values).
