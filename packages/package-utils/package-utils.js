@@ -19,6 +19,14 @@ PackageUtilities = (function() {
 		});
 	}
 
+	function addPropertyGetter(o, name, func) {
+		Object.defineProperty(o, name, {
+			get: func,
+			enumerable: true,
+			configurable: false
+		});
+	}
+
 	function addImmutablePropertyObject(o, name, childObj) {
 		var _obj = _.extend({}, childObj);
 		Object.defineProperty(o, name, {
@@ -75,7 +83,8 @@ PackageUtilities = (function() {
 		addImmutablePropertyValue,
 		addImmutablePropertyObject,
 		addImmutablePropertyArray,
-		updateDefaultOptionsWithInput
+		addPropertyGetter,
+		updateDefaultOptionsWithInput,
 	];
 	var o = {};
 	fns.forEach(function(fn) {
