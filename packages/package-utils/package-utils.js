@@ -38,6 +38,16 @@ PackageUtilities = (function() {
 		});
 	}
 
+	function addMutablePropertyObject(o, name, _obj) {
+		Object.defineProperty(o, name, {
+			get: function() {
+				return _.extend({}, _obj);
+			},
+			enumerable: true,
+			configurable: false
+		});
+	}
+
 	function addImmutablePropertyArray(o, name, arr) {
 		var _arr = arr.map(function(x) {
 			return x;
@@ -45,6 +55,18 @@ PackageUtilities = (function() {
 		Object.defineProperty(o, name, {
 			get: function() {
 				return _arr.map(function(x) {
+					return x;
+				});
+			},
+			enumerable: true,
+			configurable: false
+		});
+	}
+
+	function addMutablePropertyArray(o, name, arr) {
+		Object.defineProperty(o, name, {
+			get: function() {
+				return arr.map(function(x) {
 					return x;
 				});
 			},
@@ -83,6 +105,8 @@ PackageUtilities = (function() {
 		addImmutablePropertyValue,
 		addImmutablePropertyObject,
 		addImmutablePropertyArray,
+		addMutablePropertyObject,
+		addMutablePropertyArray,
 		addPropertyGetter,
 		updateDefaultOptionsWithInput,
 	];

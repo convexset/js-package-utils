@@ -22,9 +22,17 @@ Adds a "function" property to an object via `Object.defineProperty` (actually do
 
 Adds an "object" property to an object via `Object.defineProperty`. Does not, however, protect sub-objects.
 
+`addMutablePropertyObject(o, name, childObj)`
+
+Adds an "object" property to an object via `Object.defineProperty`. The underlying object can be mutated.
+
 `addImmutablePropertyArray(o, name, arr)`
 
 Adds an "array" property to an object via `Object.defineProperty`. Does not, however, protect object elements.
+
+`addMutablePropertyArray(o, name, arr)`
+
+Adds an "array" property to an object via `Object.defineProperty`. The underlying array can be mutated.
 
 `updateDefaultOptionsWithInput(defaultOptions, inputOptions, [throwOnTypeMismatch = true])`
 
