@@ -100,20 +100,21 @@ PackageUtilities = (function() {
 		return myOptions;
 	}
 
-	var fns = [
-		addImmutablePropertyFunction,
-		addImmutablePropertyValue,
-		addImmutablePropertyObject,
-		addImmutablePropertyArray,
-		addMutablePropertyObject,
-		addMutablePropertyArray,
-		addPropertyGetter,
-		updateDefaultOptionsWithInput,
-	];
-	var o = {};
-	fns.forEach(function(fn) {
-		addImmutablePropertyFunction(o, fn.name, fn);
+	// Have to do things this way so minification does not mess up the function.name property
+	var p_u = function PackageUtilities() {};
+	var o = new p_u();
+	_.forEach({
+		"addImmutablePropertyFunction": addImmutablePropertyFunction,
+		"addImmutablePropertyValue": addImmutablePropertyValue,
+		"addImmutablePropertyObject": addImmutablePropertyObject,
+		"addImmutablePropertyArray": addImmutablePropertyArray,
+		"addMutablePropertyObject": addMutablePropertyObject,
+		"addMutablePropertyArray": addMutablePropertyArray,
+		"addPropertyGetter": addPropertyGetter,
+		"updateDefaultOptionsWithInput": updateDefaultOptionsWithInput,
+	}, function(fn, name) {
+		addImmutablePropertyFunction(o, name, fn);
 	});
-
+	
 	return o;
 })();
