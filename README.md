@@ -29,10 +29,14 @@ Adds a getter.
 
 Adds a getter and setter. For example:
 ```javascript
-var o = {};
+var o = {_x: 100};
 PackageUtilities.addPropertyGetterAndSetter(o, 'noisy_x', {
-    get: function() { return o._x * (1 + 0.01 * Math.random()); },
-    set: function(v) { o._x = v * (1 + 0.01 * Math.random()); }
+    get: function() {
+        return this._x * (1 + 0.01 * Math.random());
+    },
+    set: function(v) {
+        this._x = v * (1 + 0.01 * Math.random());
+    }
 });
 ```
 
@@ -75,3 +79,15 @@ Gets prototype elements of `o`.
 `filterObject(o, oFilter, inPlace = false)`
 
 Filters object `o` based on existing keys of `oFilter`. If `inPlace` is set to `true`, key-value pairs in `o` absent from `oFilter` will be deleted from `o`. Returns the resulting object.
+
+`shallowCopy(o)`
+
+Does a "type-respecting" shallow copy, including non-enumerable properties, respecting property descriptors.
+
+**Note:** Because functions are returned as is, functions with explicit bindings may not work as expected.
+
+`deepCopy(o)`
+
+Does a "type-respecting" deep copy, including non-enumerable properties, respecting property descriptors.
+
+**Note:** Because functions are returned as is, functions with explicit bindings may not work as expected.

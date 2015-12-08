@@ -46,14 +46,37 @@ PackageUtilities = (function() {
 	}
 
 	function shallowCopy(o) {
-		if (!_.isObject(o)) {
+		if (!_.isObject(o) || _.isFunction(o)) {
 			return o;
 		}
-		var _o = Object.create(Object.getPrototypeOf(o));
-		_.forEach(Object.getOwnPropertyNames(o), function(k) {
-			Object.defineProperty(_o, k, Object.getOwnPropertyDescriptor(o, k));
-		});
-		return _o;
+		if (_.isArray(o)) {
+			return o.map(x => x);
+		} else {
+			var _o = Object.create(Object.getPrototypeOf(o));
+			_.forEach(Object.getOwnPropertyNames(o), function(k) {
+				Object.defineProperty(_o, k, Object.getOwnPropertyDescriptor(o, k));
+			});
+			return _o;
+		}
+	}
+
+	function deepCopy(o) {
+		if (!_.isObject(o) || _.isFunction(o)) {
+			return o;
+		}
+		if (_.isArray(o)) {
+			return o.map(x => deepCopy(x));
+		} else {
+			var _o = Object.create(Object.getPrototypeOf(o));
+			_.forEach(Object.getOwnPropertyNames(o), function(k) {
+				var propertyDescriptor = Object.getOwnPropertyDescriptor(o, k);
+				if (typeof propertyDescriptor.value !== undefined) {
+					propertyDescriptor.value = deepCopy(propertyDescriptor.value);
+				}
+				Object.defineProperty(_o, k, propertyDescriptor);
+			});
+			return _o;
+		}
 	}
 
 	function addImmutablePropertyObject(o, name, childObj, isEnumerable = true, isConfigurable = false) {
@@ -205,6 +228,7 @@ PackageUtilities = (function() {
 		"getPrototypeElements": getPrototypeElements,
 		"filterObject": filterObject,
 		"shallowCopy": shallowCopy,
+		"deepCopy": deepCopy,
 	}, function(fn, name) {
 		addImmutablePropertyFunction(o, name, fn);
 	});
