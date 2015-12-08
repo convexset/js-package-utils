@@ -1,4 +1,4 @@
-# PackageUtils
+# PackageUtilities
 
 ## Table of Contents
 

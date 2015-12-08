@@ -154,18 +154,14 @@ PackageUtilities = (function() {
 		return true;
 	}
 
-	function updateDefaultOptionsWithInput(defaultOptions, inputOptions, failOnTypeMismatch) {
+	function updateDefaultOptionsWithInput(defaultOptions, inputOptions, failOnTypeMismatch = true) {
 		var myOptions = {};
-
-		if (typeof failOnTypeMismatch === "undefined") {
-			failOnTypeMismatch = true;
-		}
 
 		_.forEach(defaultOptions, function(opt, k) {
 			var use_input = true;
-			if ((typeof inputOptions[k] !== "undefined") && hasDuckTypeEquality(inputOptions[k], opt)) {
+			if ((typeof inputOptions[k] !== "undefined") && !hasDuckTypeEquality(inputOptions[k], opt)) {
 				if (failOnTypeMismatch) {
-					throw new Meteor.Error('option-type-mismatch', k);
+					throw new Meteor.Error('option-type-mismatch', "Option: " + k + "; Input: " + inputOptions[k] + "; Default: " + opt);
 				}
 			}
 			if (typeof inputOptions[k] === "undefined") {
