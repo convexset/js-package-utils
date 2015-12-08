@@ -10,6 +10,15 @@ PackageUtilities = (function() {
 		});
 	}
 
+	function addNonEnumerablePropertyValue(o, name, value, isWritable = true, isConfigurable = false) {
+		Object.defineProperty(o, name, {
+			value: value,
+			writeable: isWritable,
+			enumerable: false,
+			configurable: isConfigurable
+		});
+	}
+
 	function addImmutablePropertyFunction(o, name, func, isEnumerable = false, isConfigurable = false) {
 		Object.defineProperty(o, name, {
 			value: func,
@@ -27,12 +36,30 @@ PackageUtilities = (function() {
 		});
 	}
 
-	function addImmutablePropertyObject(o, name, childObj, isEnumerable = true, isConfigurable = false) {
-		var _obj = _.extend({}, childObj);
+	function addPropertyGetterAndSetter(o, name, {get, set}, isEnumerable = true, isConfigurable = false) {
 		Object.defineProperty(o, name, {
-			get: function() {
-				return _.extend({}, _obj);
-			},
+			get: get,
+			set: set,
+			enumerable: isEnumerable,
+			configurable: isConfigurable
+		});
+	}
+
+	function shallowCopy(o) {
+		if (!_.isObject(o)) {
+			return o;
+		}
+		var _o = Object.create(Object.getPrototypeOf(o));
+		_.forEach(Object.getOwnPropertyNames(o), function(k) {
+			Object.defineProperty(_o, k, Object.getOwnPropertyDescriptor(o, k));
+		});
+		return _o;
+	}
+
+	function addImmutablePropertyObject(o, name, childObj, isEnumerable = true, isConfigurable = false) {
+		var _obj = shallowCopy(childObj);
+		Object.defineProperty(o, name, {
+			get: () => shallowCopy(_obj),
 			enumerable: isEnumerable,
 			configurable: isConfigurable
 		});
@@ -40,24 +67,16 @@ PackageUtilities = (function() {
 
 	function addMutablePropertyObject(o, name, _obj, isEnumerable = true, isConfigurable = false) {
 		Object.defineProperty(o, name, {
-			get: function() {
-				return _.extend({}, _obj);
-			},
+			get: () => shallowCopy(_obj),
 			enumerable: isEnumerable,
 			configurable: isConfigurable
 		});
 	}
 
 	function addImmutablePropertyArray(o, name, arr, isEnumerable = true, isConfigurable = false) {
-		var _arr = arr.map(function(x) {
-			return x;
-		});
+		var _arr = arr.map(x => x);
 		Object.defineProperty(o, name, {
-			get: function() {
-				return _arr.map(function(x) {
-					return x;
-				});
-			},
+			get: () => _arr.map(x => x),
 			enumerable: isEnumerable,
 			configurable: isConfigurable
 		});
@@ -65,11 +84,7 @@ PackageUtilities = (function() {
 
 	function addMutablePropertyArray(o, name, arr, isEnumerable = true, isConfigurable = false) {
 		Object.defineProperty(o, name, {
-			get: function() {
-				return arr.map(function(x) {
-					return x;
-				});
-			},
+			get: () => arr.map(x => x),
 			enumerable: isEnumerable,
 			configurable: isConfigurable
 		});
@@ -178,15 +193,18 @@ PackageUtilities = (function() {
 	_.forEach({
 		"addImmutablePropertyFunction": addImmutablePropertyFunction,
 		"addImmutablePropertyValue": addImmutablePropertyValue,
+		"addNonEnumerablePropertyValue": addNonEnumerablePropertyValue,
 		"addImmutablePropertyObject": addImmutablePropertyObject,
 		"addImmutablePropertyArray": addImmutablePropertyArray,
 		"addMutablePropertyObject": addMutablePropertyObject,
 		"addMutablePropertyArray": addMutablePropertyArray,
 		"addPropertyGetter": addPropertyGetter,
+		"addPropertyGetterAndSetter": addPropertyGetterAndSetter,
 		"updateDefaultOptionsWithInput": updateDefaultOptionsWithInput,
 		"hasDuckTypeEquality": hasDuckTypeEquality,
 		"getPrototypeElements": getPrototypeElements,
 		"filterObject": filterObject,
+		"shallowCopy": shallowCopy,
 	}, function(fn, name) {
 		addImmutablePropertyFunction(o, name, fn);
 	});

@@ -25,9 +25,24 @@ Adds a "value" property to an object via `Object.defineProperty`.
 
 Adds a getter.
 
+`addPropertyGetter(o, name, {get, set}, isEnumerable = true, isConfigurable = false)`
+
+Adds a getter and setter. For example:
+```javascript
+var o = {};
+PackageUtilities.addPropertyGetterAndSetter(o, 'noisy_x', {
+    get: function() { return o._x * (1 + 0.01 * Math.random()); },
+    set: function(v) { o._x = v * (1 + 0.01 * Math.random()); }
+});
+```
+
+`addNonEnumerablePropertyValue(o, name, value, isWritable = false, isConfigurable = false)`
+
+Adds a non-enumerable property.
+
 `addImmutablePropertyFunction(o, name, fn, isEnumerable = false, isConfigurable = false)`
 
-Adds a "function" property to an object via `Object.defineProperty` (actually done the same way as for values).
+Adds a "function" property to an object via `Object.defineProperty`. By default, functions are added as non-enumerable properties.
 
 `addImmutablePropertyObject(o, name, childObj, isEnumerable = true, isConfigurable = false)`
 
