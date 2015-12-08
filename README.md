@@ -17,31 +17,31 @@ This is available as [`convexset:package-utils`](https://atmospherejs.com/convex
 
 ## Usage
 
-`addImmutablePropertyValue(o, name, value, isEnumerable = true)`
+`addImmutablePropertyValue(o, name, value, isEnumerable = true, isConfigurable = false)`
 
 Adds a "value" property to an object via `Object.defineProperty`.
 
-`addPropertyGetter(o, name, fn, isEnumerable = true)`
+`addPropertyGetter(o, name, fn, isEnumerable = true, isConfigurable = false)`
 
 Adds a getter.
 
-`addImmutablePropertyFunction(o, name, fn, isEnumerable = false)`
+`addImmutablePropertyFunction(o, name, fn, isEnumerable = false, isConfigurable = false)`
 
 Adds a "function" property to an object via `Object.defineProperty` (actually done the same way as for values).
 
-`addImmutablePropertyObject(o, name, childObj, isEnumerable = true)`
+`addImmutablePropertyObject(o, name, childObj, isEnumerable = true, isConfigurable = false)`
 
 Adds an "object" property to an object via `Object.defineProperty`. Does not, however, protect members that are objects.
 
-`addMutablePropertyObject(o, name, childObj, isEnumerable = true)`
+`addMutablePropertyObject(o, name, childObj, isEnumerable = true, isConfigurable = false)`
 
 Adds an "object" property to an object via `Object.defineProperty`. The underlying object can be mutated, but not through the property. Does not, however, protect members that are objects.
 
-`addImmutablePropertyArray(o, name, arr, isEnumerable = true)`
+`addImmutablePropertyArray(o, name, arr, isEnumerable = true, isConfigurable = false)`
 
 Adds an "array" property to an object via `Object.defineProperty`. Does not, however, protect array elements.
 
-`addMutablePropertyArray(o, name, arr, isEnumerable = true)`
+`addMutablePropertyArray(o, name, arr, isEnumerable = true, isConfigurable = false)`
 
 Adds an "array" property to an object via `Object.defineProperty`. The underlying array can be directed mutated, but changes made to the property does not affect the underlying array. Does not, however, protect array elements.
 

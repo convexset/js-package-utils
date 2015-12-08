@@ -1,54 +1,54 @@
 /* global PackageUtilities: true */
 
 PackageUtilities = (function() {
-	function addImmutablePropertyValue(o, name, value, isEnumerable = true) {
+	function addImmutablePropertyValue(o, name, value, isEnumerable = true, isConfigurable = false) {
 		Object.defineProperty(o, name, {
 			value: value,
 			writeable: false,
 			enumerable: isEnumerable,
-			configurable: false
+			configurable: isConfigurable
 		});
 	}
 
-	function addImmutablePropertyFunction(o, name, func, isEnumerable = false) {
+	function addImmutablePropertyFunction(o, name, func, isEnumerable = false, isConfigurable = false) {
 		Object.defineProperty(o, name, {
 			value: func,
 			writeable: false,
 			enumerable: isEnumerable,
-			configurable: false
+			configurable: isConfigurable
 		});
 	}
 
-	function addPropertyGetter(o, name, func, isEnumerable = true) {
+	function addPropertyGetter(o, name, func, isEnumerable = true, isConfigurable = false) {
 		Object.defineProperty(o, name, {
 			get: func,
 			enumerable: isEnumerable,
-			configurable: false
+			configurable: isConfigurable
 		});
 	}
 
-	function addImmutablePropertyObject(o, name, childObj, isEnumerable = true) {
+	function addImmutablePropertyObject(o, name, childObj, isEnumerable = true, isConfigurable = false) {
 		var _obj = _.extend({}, childObj);
 		Object.defineProperty(o, name, {
 			get: function() {
 				return _.extend({}, _obj);
 			},
 			enumerable: isEnumerable,
-			configurable: false
+			configurable: isConfigurable
 		});
 	}
 
-	function addMutablePropertyObject(o, name, _obj, isEnumerable = true) {
+	function addMutablePropertyObject(o, name, _obj, isEnumerable = true, isConfigurable = false) {
 		Object.defineProperty(o, name, {
 			get: function() {
 				return _.extend({}, _obj);
 			},
 			enumerable: isEnumerable,
-			configurable: false
+			configurable: isConfigurable
 		});
 	}
 
-	function addImmutablePropertyArray(o, name, arr, isEnumerable = true) {
+	function addImmutablePropertyArray(o, name, arr, isEnumerable = true, isConfigurable = false) {
 		var _arr = arr.map(function(x) {
 			return x;
 		});
@@ -59,11 +59,11 @@ PackageUtilities = (function() {
 				});
 			},
 			enumerable: isEnumerable,
-			configurable: false
+			configurable: isConfigurable
 		});
 	}
 
-	function addMutablePropertyArray(o, name, arr, isEnumerable = true) {
+	function addMutablePropertyArray(o, name, arr, isEnumerable = true, isConfigurable = false) {
 		Object.defineProperty(o, name, {
 			get: function() {
 				return arr.map(function(x) {
@@ -71,7 +71,7 @@ PackageUtilities = (function() {
 				});
 			},
 			enumerable: isEnumerable,
-			configurable: false
+			configurable: isConfigurable
 		});
 	}
 
