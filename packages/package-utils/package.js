@@ -1,6 +1,6 @@
 Package.describe({
 	name: 'convexset:package-utils',
-	version: '0.1.3',
+	version: '0.1.4',
 	summary: 'Helpful tools for writing Meteor packages',
 	git: 'https://github.com/convexset/meteor-package-utils',
 	documentation: '../../README.md'

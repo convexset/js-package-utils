@@ -1,54 +1,54 @@
 /* global PackageUtilities: true */
 
 PackageUtilities = (function() {
-	function addImmutablePropertyValue(o, name, value) {
+	function addImmutablePropertyValue(o, name, value, isEnumerable = true) {
 		Object.defineProperty(o, name, {
 			value: value,
 			writeable: false,
-			enumerable: true,
+			enumerable: isEnumerable,
 			configurable: false
 		});
 	}
 
-	function addImmutablePropertyFunction(o, name, func) {
+	function addImmutablePropertyFunction(o, name, func, isEnumerable = false) {
 		Object.defineProperty(o, name, {
 			value: func,
 			writeable: false,
-			enumerable: true,
+			enumerable: isEnumerable,
 			configurable: false
 		});
 	}
 
-	function addPropertyGetter(o, name, func) {
+	function addPropertyGetter(o, name, func, isEnumerable = true) {
 		Object.defineProperty(o, name, {
 			get: func,
-			enumerable: true,
+			enumerable: isEnumerable,
 			configurable: false
 		});
 	}
 
-	function addImmutablePropertyObject(o, name, childObj) {
+	function addImmutablePropertyObject(o, name, childObj, isEnumerable = true) {
 		var _obj = _.extend({}, childObj);
 		Object.defineProperty(o, name, {
 			get: function() {
 				return _.extend({}, _obj);
 			},
-			enumerable: true,
+			enumerable: isEnumerable,
 			configurable: false
 		});
 	}
 
-	function addMutablePropertyObject(o, name, _obj) {
+	function addMutablePropertyObject(o, name, _obj, isEnumerable = true) {
 		Object.defineProperty(o, name, {
 			get: function() {
 				return _.extend({}, _obj);
 			},
-			enumerable: true,
+			enumerable: isEnumerable,
 			configurable: false
 		});
 	}
 
-	function addImmutablePropertyArray(o, name, arr) {
+	function addImmutablePropertyArray(o, name, arr, isEnumerable = true) {
 		var _arr = arr.map(function(x) {
 			return x;
 		});
@@ -58,45 +58,118 @@ PackageUtilities = (function() {
 					return x;
 				});
 			},
-			enumerable: true,
+			enumerable: isEnumerable,
 			configurable: false
 		});
 	}
 
-	function addMutablePropertyArray(o, name, arr) {
+	function addMutablePropertyArray(o, name, arr, isEnumerable = true) {
 		Object.defineProperty(o, name, {
 			get: function() {
 				return arr.map(function(x) {
 					return x;
 				});
 			},
-			enumerable: true,
+			enumerable: isEnumerable,
 			configurable: false
 		});
 	}
 
-	function updateDefaultOptionsWithInput(defaultOptions, inputOptions, throwOnTypeMismatch) {
-		var myOptions = {};
+	function getPrototypeElements(o, _payload = {}) {
+		var oProto = Object.getPrototypeOf(o);
+		if (oProto) {
+			_.forEach(oProto, function(item, name) {
+				if (typeof _payload[name] === "undefined") {
+					_payload[name] = item;
+				}
+			});
+			getPrototypeElements(oProto, _payload);
+		}
+		return _payload;
+	}
 
-		if (typeof throwOnTypeMismatch === "undefined") {
-			throwOnTypeMismatch = true;
+	function filterObject(o, oFilter, inPlace = false) {
+		var ret = (inPlace) ? o : {};
+		_.forEach(o, function(v, k) {
+			if (inPlace) {
+				if (!oFilter.hasOwnProperty(k)) {
+					delete ret[k];
+				}
+			} else {
+				if (oFilter.hasOwnProperty(k)) {
+					ret[k] = v;
+				}
+			}
+		});
+		return ret;
+	}
+
+	function hasDuckTypeEquality(examinedDuck, sourceDuck, checkPrototypeChainEquality = false) {
+		if (!_.isObject(sourceDuck)) {
+			return typeof examinedDuck === typeof sourceDuck;
 		}
 
-		for (var k in defaultOptions) {
-			if (defaultOptions.hasOwnProperty(k)) {
-				var use_input = true;
-				if ((typeof inputOptions[k] !== "undefined") && (typeof inputOptions[k] !== typeof defaultOptions[k])) {
-					if (throwOnTypeMismatch) {
-						throw new Meteor.Error('option-type-mismatch', 'Option: ' + k + ' (type of default: ' + (typeof defaultOptions[k]) + ')');
-					}
-					use_input = false;
-				}
-				if (typeof inputOptions[k] === "undefined") {
-					use_input = false;
-				}
-				myOptions[k] = use_input ? inputOptions[k] : defaultOptions[k];
+		// has keys of source object
+		var filteredDuck = filterObject(examinedDuck, sourceDuck);
+		if (!_.isEqual(
+			Object.keys(filteredDuck).sort(),
+			Object.keys(sourceDuck).sort()
+		)) {
+			return false;
+		}
+
+		// reachable prototype member check
+		var exProto = getPrototypeElements(examinedDuck);
+		var srcProto = getPrototypeElements(sourceDuck);
+		if (!_.isEqual(
+			Object.keys(exProto).sort(),
+			Object.keys(srcProto).sort()
+		)) {
+			return false;
+		}
+
+		// reachable prototype member equality check
+		if (checkPrototypeChainEquality) {
+			if (!_.isEqual(
+				filterObject(exProto, srcProto),
+				srcProto
+			)) {
+				return false;
 			}
 		}
+
+		// deep type check
+		// note that keys already match
+		for (var k in sourceDuck) {
+			if (sourceDuck.hasOwnProperty(k)) {
+				if (!hasDuckTypeEquality(examinedDuck[k], sourceDuck[k], checkPrototypeChainEquality)) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	function updateDefaultOptionsWithInput(defaultOptions, inputOptions, failOnTypeMismatch) {
+		var myOptions = {};
+
+		if (typeof failOnTypeMismatch === "undefined") {
+			failOnTypeMismatch = true;
+		}
+
+		_.forEach(defaultOptions, function(opt, k) {
+			var use_input = true;
+			if ((typeof inputOptions[k] !== "undefined") && hasDuckTypeEquality(inputOptions[k], opt)) {
+				if (failOnTypeMismatch) {
+					throw new Meteor.Error('option-type-mismatch', k);
+				}
+			}
+			if (typeof inputOptions[k] === "undefined") {
+				use_input = false;
+			}
+			myOptions[k] = use_input ? inputOptions[k] : opt;
+		});
 		return myOptions;
 	}
 
@@ -112,9 +185,12 @@ PackageUtilities = (function() {
 		"addMutablePropertyArray": addMutablePropertyArray,
 		"addPropertyGetter": addPropertyGetter,
 		"updateDefaultOptionsWithInput": updateDefaultOptionsWithInput,
+		"hasDuckTypeEquality": hasDuckTypeEquality,
+		"getPrototypeElements": getPrototypeElements,
+		"filterObject": filterObject,
 	}, function(fn, name) {
 		addImmutablePropertyFunction(o, name, fn);
 	});
-	
+
 	return o;
 })();

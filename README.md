@@ -17,34 +17,46 @@ This is available as [`convexset:package-utils`](https://atmospherejs.com/convex
 
 ## Usage
 
-`addImmutablePropertyValue(o, name, value)`
+`addImmutablePropertyValue(o, name, value, isEnumerable = true)`
 
 Adds a "value" property to an object via `Object.defineProperty`.
 
-`addPropertyGetter(o, name, fn)`
+`addPropertyGetter(o, name, fn, isEnumerable = true)`
 
 Adds a getter.
 
-`addImmutablePropertyFunction(o, name, fn)`
+`addImmutablePropertyFunction(o, name, fn, isEnumerable = false)`
 
 Adds a "function" property to an object via `Object.defineProperty` (actually done the same way as for values).
 
-`addImmutablePropertyObject(o, name, childObj)`
+`addImmutablePropertyObject(o, name, childObj, isEnumerable = true)`
 
-Adds an "object" property to an object via `Object.defineProperty`. Does not, however, protect sub-objects.
+Adds an "object" property to an object via `Object.defineProperty`. Does not, however, protect members that are objects.
 
-`addMutablePropertyObject(o, name, childObj)`
+`addMutablePropertyObject(o, name, childObj, isEnumerable = true)`
 
-Adds an "object" property to an object via `Object.defineProperty`. The underlying object can be mutated.
+Adds an "object" property to an object via `Object.defineProperty`. The underlying object can be mutated, but not through the property. Does not, however, protect members that are objects.
 
-`addImmutablePropertyArray(o, name, arr)`
+`addImmutablePropertyArray(o, name, arr, isEnumerable = true)`
 
-Adds an "array" property to an object via `Object.defineProperty`. Does not, however, protect object elements.
+Adds an "array" property to an object via `Object.defineProperty`. Does not, however, protect array elements.
 
-`addMutablePropertyArray(o, name, arr)`
+`addMutablePropertyArray(o, name, arr, isEnumerable = true)`
 
-Adds an "array" property to an object via `Object.defineProperty`. The underlying array can be mutated.
+Adds an "array" property to an object via `Object.defineProperty`. The underlying array can be directed mutated, but changes made to the property does not affect the underlying array. Does not, however, protect array elements.
 
-`updateDefaultOptionsWithInput(defaultOptions, inputOptions, [throwOnTypeMismatch = true])`
+`updateDefaultOptionsWithInput(defaultOptions, inputOptions, failOnTypeMismatch = true)`
 
 Uses the (top-level) properties of `defaultOptions` and fills in the gaps from `inputOptions` with basic type checking.
+
+`hasDuckTypeEquality(examinedDuck, sourceDuck, checkPrototypeChainEquality = false)`
+
+Checks for "duck-type" equality. If `checkPrototypeChainEquality` is set to `true`, there will be an additional check that prototype chain elements point to the same functions.
+
+`getPrototypeElements(o)`
+
+Gets prototype elements of `o`.
+
+`filterObject(o, oFilter, inPlace = false)`
+
+Filters object `o` based on existing keys of `oFilter`. If `inPlace` is set to `true`, key-value pairs in `o` absent from `oFilter` will be deleted from `o`. Returns the resulting object.
