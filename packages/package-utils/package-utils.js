@@ -108,6 +108,9 @@ PackageUtilities = (function() {
 		if (!_.isObject(sourceDuck)) {
 			return typeof examinedDuck === typeof sourceDuck;
 		}
+		if (_.isArray(sourceDuck) && _.isArray(examinedDuck)) {
+			return true;
+		}
 
 		// has keys of source object
 		var filteredDuck = filterObject(examinedDuck, sourceDuck);
