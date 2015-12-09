@@ -36,7 +36,9 @@ PackageUtilities = (function() {
 		});
 	}
 
-	function addPropertyGetterAndSetter(o, name, {get, set}, isEnumerable = true, isConfigurable = false) {
+	function addPropertyGetterAndSetter(o, name, {
+		get, set
+	}, isEnumerable = true, isConfigurable = false) {
 		Object.defineProperty(o, name, {
 			get: get,
 			set: set,
@@ -46,37 +48,47 @@ PackageUtilities = (function() {
 	}
 
 	function shallowCopy(o) {
-		if (!_.isObject(o) || _.isFunction(o)) {
+		if (!_.isObject(o) || _.isFunction(o) || (o instanceof RegExp)) {
 			return o;
 		}
 		if (_.isArray(o)) {
 			return o.map(x => x);
-		} else {
-			var _o = Object.create(Object.getPrototypeOf(o));
-			_.forEach(Object.getOwnPropertyNames(o), function(k) {
-				Object.defineProperty(_o, k, Object.getOwnPropertyDescriptor(o, k));
-			});
-			return _o;
 		}
+		if (o instanceof Date) {
+			return new Date(o.getTime());
+		}
+
+		var _o = Object.create(Object.getPrototypeOf(o));
+		_.forEach(Object.getOwnPropertyNames(o), function(k) {
+			Object.defineProperty(_o, k, Object.getOwnPropertyDescriptor(o, k));
+		});
+		return _o;
 	}
 
-	function deepCopy(o) {
-		if (!_.isObject(o) || _.isFunction(o)) {
+	function deepCopy(o, useCloneMethod = true) {
+		if (!_.isObject(o) || _.isFunction(o) || (o instanceof RegExp)) {
 			return o;
 		}
 		if (_.isArray(o)) {
-			return o.map(x => deepCopy(x));
-		} else {
-			var _o = Object.create(Object.getPrototypeOf(o));
-			_.forEach(Object.getOwnPropertyNames(o), function(k) {
-				var propertyDescriptor = Object.getOwnPropertyDescriptor(o, k);
-				if (typeof propertyDescriptor.value !== undefined) {
-					propertyDescriptor.value = deepCopy(propertyDescriptor.value);
-				}
-				Object.defineProperty(_o, k, propertyDescriptor);
-			});
-			return _o;
+			return o.map(x => deepCopy(x, useCloneMethod));
 		}
+		if (o instanceof Date) {
+			return new Date(o.getTime());
+		}
+
+		if (useCloneMethod && _.isFunction(o.clone)) {
+			return o.clone();
+		}
+
+		var _o = Object.create(Object.getPrototypeOf(o));
+		_.forEach(Object.getOwnPropertyNames(o), function(k) {
+			var propertyDescriptor = Object.getOwnPropertyDescriptor(o, k);
+			if (typeof propertyDescriptor.value !== undefined) {
+				propertyDescriptor.value = deepCopy(propertyDescriptor.value, useCloneMethod);
+			}
+			Object.defineProperty(_o, k, propertyDescriptor);
+		});
+		return _o;
 	}
 
 	function addImmutablePropertyObject(o, name, childObj, isEnumerable = true, isConfigurable = false) {
