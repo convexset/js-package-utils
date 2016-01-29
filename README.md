@@ -25,7 +25,7 @@ Adds a "value" property to an object via `Object.defineProperty`.
 
 Adds a getter.
 
-`addPropertyGetter(o, name, {get, set}, isEnumerable = true, isConfigurable = false)`
+`addPropertyGetterAndSetter(o, name, {get, set}, isEnumerable = true, isConfigurable = false)`
 
 Adds a getter and setter. For example:
 ```javascript
