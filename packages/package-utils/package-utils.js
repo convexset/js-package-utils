@@ -47,8 +47,17 @@ PackageUtilities = (function() {
 		});
 	}
 
+	function isKindaUncloneable(o) {
+		return ['Function', 'Boolean', 'String', 'Number', 'RegExp', 'Symbol']
+			.filter(function(t) {
+				return Object.prototype.toString.call(o) === '[object ' + t + ']';
+			})
+			.length > 0;
+	}
+
 	function shallowCopy(o) {
-		if (!_.isObject(o) || _.isFunction(o) || (o instanceof RegExp)) {
+		// types to "just return"
+		if (isKindaUncloneable(o)) {
 			return o;
 		}
 		if (_.isArray(o)) {
@@ -66,7 +75,8 @@ PackageUtilities = (function() {
 	}
 
 	function deepCopy(o, useCloneMethod = true) {
-		if (!_.isObject(o) || _.isFunction(o) || (o instanceof RegExp)) {
+		// types to "just return"
+		if (isKindaUncloneable(o)) {
 			return o;
 		}
 		if (_.isArray(o)) {
