@@ -48,7 +48,7 @@ PackageUtilities = (function() {
 	}
 
 	function isKindaUncloneable(o) {
-		return ['Function', 'Boolean', 'String', 'Number', 'RegExp', 'Symbol']
+		return ['Null', 'Undefined', 'Function', 'Boolean', 'String', 'Number', 'RegExp', 'Symbol']
 			.filter(function(t) {
 				return Object.prototype.toString.call(o) === '[object ' + t + ']';
 			})
