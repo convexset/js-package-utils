@@ -7,13 +7,21 @@
 
 
 - [Install](#install)
+  - [Meteor Package](#meteor-package)
+  - [npm Package](#npm-package)
 - [Usage](#usage)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Install
 
+### Meteor Package
+
 This is available as [`convexset:package-utils`](https://atmospherejs.com/convexset/package-utils) on [Atmosphere](https://atmospherejs.com/). (Install with `meteor add convexset:package-utils`.)
+
+### npm Package
+
+... also available as [`package-utils`](https://www.npmjs.com/package/package-utils) on [npm](https://www.npmjs.com/). (Install with `npm install package-utils`.)
 
 ## Usage
 

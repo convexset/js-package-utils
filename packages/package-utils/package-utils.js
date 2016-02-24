@@ -1,7 +1,44 @@
 /* global PackageUtilities: true */
 
-PackageUtilities = (function() {
-	function addImmutablePropertyValue(o, name, value, isEnumerable = true, isConfigurable = false) {
+(function(root, name, factory) {
+	if (typeof module === "object" && module.exports) {
+		// Node or CommonJS
+		module.exports = factory(require("underscore"));
+	} else {
+		// The Else Condition
+
+		if (typeof define === "function" && define.amd) {
+			// AMD... but why?
+			define(["underscore"], function(_) {
+				return factory(_);
+			});
+		}
+
+		// Find the global object for export to both the browser and web workers.
+		var globalObject = (typeof window === 'object') && window ||
+			(typeof self === 'object') && self;
+
+		var thingie = factory(_);
+		root[name] = thingie;
+		if (!!globalObject) {
+			globalObject[name] = thingie;
+		}
+
+		// Poor Meteor
+		PackageUtilities = thingie;
+	}
+}(this, 'PackageUtilities', factoryPackageUtilities));
+
+function factoryPackageUtilities(_) {
+	function isUndefined(o) {
+		return typeof o === "undefined";
+	}
+
+	function addImmutablePropertyValue(o, name, value, isEnumerable, isConfigurable) {
+        // default options
+        isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
+        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+
 		Object.defineProperty(o, name, {
 			value: value,
 			writeable: false,
@@ -10,7 +47,11 @@ PackageUtilities = (function() {
 		});
 	}
 
-	function addNonEnumerablePropertyValue(o, name, value, isWritable = true, isConfigurable = false) {
+	function addNonEnumerablePropertyValue(o, name, value, isWritable, isConfigurable) {
+        // default options
+        isWritable = isUndefined(isWritable) ? true : isWritable;
+        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+
 		Object.defineProperty(o, name, {
 			value: value,
 			writeable: isWritable,
@@ -19,7 +60,11 @@ PackageUtilities = (function() {
 		});
 	}
 
-	function addImmutablePropertyFunction(o, name, func, isEnumerable = false, isConfigurable = false) {
+	function addImmutablePropertyFunction(o, name, func, isEnumerable, isConfigurable) {
+        // default options
+        isEnumerable = isUndefined(isEnumerable) ? false : isEnumerable;
+        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+
 		Object.defineProperty(o, name, {
 			value: func,
 			writeable: false,
@@ -28,7 +73,11 @@ PackageUtilities = (function() {
 		});
 	}
 
-	function addPropertyGetter(o, name, func, isEnumerable = true, isConfigurable = false) {
+	function addPropertyGetter(o, name, func, isEnumerable, isConfigurable) {
+        // default options
+        isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
+        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+
 		Object.defineProperty(o, name, {
 			get: func,
 			enumerable: isEnumerable,
@@ -36,12 +85,14 @@ PackageUtilities = (function() {
 		});
 	}
 
-	function addPropertyGetterAndSetter(o, name, {
-		get, set
-	}, isEnumerable = true, isConfigurable = false) {
+	function addPropertyGetterAndSetter(o, name, getAndSet, isEnumerable, isConfigurable) {
+        // default options
+        isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
+        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+
 		Object.defineProperty(o, name, {
-			get: get,
-			set: set,
+			get: getAndSet.get,
+			set: getAndSet.set,
 			enumerable: isEnumerable,
 			configurable: isConfigurable
 		});
@@ -74,7 +125,10 @@ PackageUtilities = (function() {
 		return _o;
 	}
 
-	function deepCopy(o, useCloneMethod = true) {
+	function deepCopy(o, useCloneMethod) {
+        // default options
+        useCloneMethod = isUndefined(useCloneMethod) ? true : useCloneMethod;
+
 		// types to "just return"
 		if (isKindaUncloneable(o)) {
 			return o;
@@ -93,7 +147,7 @@ PackageUtilities = (function() {
 		var _o = Object.create(Object.getPrototypeOf(o));
 		_.forEach(Object.getOwnPropertyNames(o), function(k) {
 			var propertyDescriptor = Object.getOwnPropertyDescriptor(o, k);
-			if (typeof propertyDescriptor.value !== undefined) {
+			if (typeof propertyDescriptor.value !== "undefined") {
 				propertyDescriptor.value = deepCopy(propertyDescriptor.value, useCloneMethod);
 			}
 			Object.defineProperty(_o, k, propertyDescriptor);
@@ -101,7 +155,11 @@ PackageUtilities = (function() {
 		return _o;
 	}
 
-	function addImmutablePropertyObject(o, name, childObj, isEnumerable = true, isConfigurable = false) {
+	function addImmutablePropertyObject(o, name, childObj, isEnumerable, isConfigurable) {
+        // default options
+        isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
+        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+
 		var _obj = shallowCopy(childObj);
 		Object.defineProperty(o, name, {
 			get: () => shallowCopy(_obj),
@@ -110,7 +168,11 @@ PackageUtilities = (function() {
 		});
 	}
 
-	function addMutablePropertyObject(o, name, _obj, isEnumerable = true, isConfigurable = false) {
+	function addMutablePropertyObject(o, name, _obj, isEnumerable, isConfigurable) {
+        // default options
+        isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
+        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+
 		Object.defineProperty(o, name, {
 			get: () => shallowCopy(_obj),
 			enumerable: isEnumerable,
@@ -118,7 +180,11 @@ PackageUtilities = (function() {
 		});
 	}
 
-	function addImmutablePropertyArray(o, name, arr, isEnumerable = true, isConfigurable = false) {
+	function addImmutablePropertyArray(o, name, arr, isEnumerable, isConfigurable) {
+        // default options
+        isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
+        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+
 		var _arr = arr.map(x => x);
 		Object.defineProperty(o, name, {
 			get: () => _arr.map(x => x),
@@ -127,7 +193,11 @@ PackageUtilities = (function() {
 		});
 	}
 
-	function addMutablePropertyArray(o, name, arr, isEnumerable = true, isConfigurable = false) {
+	function addMutablePropertyArray(o, name, arr, isEnumerable, isConfigurable) {
+        // default options
+        isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
+        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+
 		Object.defineProperty(o, name, {
 			get: () => arr.map(x => x),
 			enumerable: isEnumerable,
@@ -135,7 +205,10 @@ PackageUtilities = (function() {
 		});
 	}
 
-	function getPrototypeElements(o, _payload = {}) {
+	function getPrototypeElements(o, _payload) {
+        // default options
+        _payload = isUndefined(_payload) ? {} : _payload;
+
 		var oProto = Object.getPrototypeOf(o);
 		if (oProto) {
 			_.forEach(oProto, function(item, name) {
@@ -148,7 +221,10 @@ PackageUtilities = (function() {
 		return _payload;
 	}
 
-	function filterObject(o, oFilter, inPlace = false) {
+	function filterObject(o, oFilter, inPlace) {
+        // default options
+        inPlace = isUndefined(inPlace) ? false : inPlace;
+
 		var ret = (inPlace) ? o : {};
 		_.forEach(o, function(v, k) {
 			if (inPlace) {
@@ -164,7 +240,10 @@ PackageUtilities = (function() {
 		return ret;
 	}
 
-	function hasDuckTypeEquality(examinedDuck, sourceDuck, checkPrototypeChainEquality = false) {
+	function hasDuckTypeEquality(examinedDuck, sourceDuck, checkPrototypeChainEquality) {
+        // default options
+        checkPrototypeChainEquality = isUndefined(checkPrototypeChainEquality) ? false : checkPrototypeChainEquality;
+
 		if (!_.isObject(sourceDuck)) {
 			return typeof examinedDuck === typeof sourceDuck;
 		}
@@ -214,7 +293,10 @@ PackageUtilities = (function() {
 		return true;
 	}
 
-	function updateDefaultOptionsWithInput(defaultOptions, inputOptions, failOnTypeMismatch = true) {
+	function updateDefaultOptionsWithInput(defaultOptions, inputOptions, failOnTypeMismatch) {
+        // default options
+        failOnTypeMismatch = isUndefined(failOnTypeMismatch) ? true : failOnTypeMismatch;
+
 		var myOptions = {};
 
 		_.forEach(defaultOptions, function(opt, k) {
@@ -256,4 +338,4 @@ PackageUtilities = (function() {
 	});
 
 	return o;
-})();
+}
