@@ -6,12 +6,15 @@ Package.describe({
 	documentation: '../../README.md'
 });
 
+Npm.depends({
+	'underscore': '1.8.3'
+});
+
 Package.onUse(function(api) {
 	api.versionsFrom('1.2.0.2');
 	api.use(['ecmascript', 'underscore']);
 	api.addFiles(['package-utils.js']);
-	Npm.depends({'underscore': '1.8.3'});
-  api.export('PackageUtilities');
+	api.export('PackageUtilities');
 });
 
 Package.onTest(function(api) {
