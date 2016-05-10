@@ -1,6 +1,6 @@
 Package.describe({
 	name: 'convexset:package-utils',
-	version: '0.1.13',
+	version: '0.1.14',
 	summary: 'Helpful tools for writing Meteor packages',
 	git: 'https://github.com/convexset/meteor-package-utils',
 	documentation: '../../README.md'
@@ -10,7 +10,8 @@ Package.onUse(function(api) {
 	api.versionsFrom('1.2.0.2');
 	api.use(['ecmascript', 'underscore']);
 	api.addFiles(['package-utils.js']);
-    api.export('PackageUtilities');
+	Npm.depends({'underscore': '1.8.3'});
+  api.export('PackageUtilities');
 });
 
 Package.onTest(function(api) {
