@@ -1,5 +1,7 @@
 # PackageUtilities
 
+**Consider this package to be deprecated. Use the version [on npm](https://www.npmjs.com/package/package-utils).**
+
 ## Table of Contents
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
