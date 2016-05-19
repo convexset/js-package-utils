@@ -1,34 +1,4 @@
-/* global PackageUtilities: true */
-
-(function(root, name, factory) {
-	if (typeof module === "object" && module.exports) {
-		// Node or CommonJS
-		module.exports = factory(require("underscore"));
-		PackageUtilities = module.exports;
-	} else {
-		// The Else Condition
-
-		if (typeof define === "function" && define.amd) {
-			// AMD... but why?
-			define(["underscore"], function(_) {
-				return factory(_);
-			});
-		}
-
-		// Find the global object for export to both the browser and web workers.
-		var globalObject = (typeof window === 'object') && window ||
-			(typeof self === 'object') && self;
-
-		var thingie = factory(_);
-		root[name] = thingie;
-		if (!!globalObject) {
-			globalObject[name] = thingie;
-		}
-
-		// Poor Meteor
-		PackageUtilities = thingie;
-	}
-}(this, 'PackageUtilities', factoryPackageUtilities));
+module.exports = factoryPackageUtilities(require("underscore"));
 
 function factoryPackageUtilities(_) {
 	function isUndefined(o) {
@@ -36,9 +6,9 @@ function factoryPackageUtilities(_) {
 	}
 
 	function addImmutablePropertyValue(o, name, value, isEnumerable, isConfigurable) {
-        // default options
-        isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
-        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+		// default options
+		isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
+		isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
 
 		Object.defineProperty(o, name, {
 			value: value,
@@ -49,9 +19,9 @@ function factoryPackageUtilities(_) {
 	}
 
 	function addNonEnumerablePropertyValue(o, name, value, isWritable, isConfigurable) {
-        // default options
-        isWritable = isUndefined(isWritable) ? true : isWritable;
-        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+		// default options
+		isWritable = isUndefined(isWritable) ? true : isWritable;
+		isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
 
 		Object.defineProperty(o, name, {
 			value: value,
@@ -62,9 +32,9 @@ function factoryPackageUtilities(_) {
 	}
 
 	function addImmutablePropertyFunction(o, name, func, isEnumerable, isConfigurable) {
-        // default options
-        isEnumerable = isUndefined(isEnumerable) ? false : isEnumerable;
-        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+		// default options
+		isEnumerable = isUndefined(isEnumerable) ? false : isEnumerable;
+		isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
 
 		Object.defineProperty(o, name, {
 			value: func,
@@ -75,9 +45,9 @@ function factoryPackageUtilities(_) {
 	}
 
 	function addPropertyGetter(o, name, func, isEnumerable, isConfigurable) {
-        // default options
-        isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
-        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+		// default options
+		isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
+		isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
 
 		Object.defineProperty(o, name, {
 			get: func,
@@ -87,9 +57,9 @@ function factoryPackageUtilities(_) {
 	}
 
 	function addPropertyGetterAndSetter(o, name, getAndSet, isEnumerable, isConfigurable) {
-        // default options
-        isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
-        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+		// default options
+		isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
+		isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
 
 		Object.defineProperty(o, name, {
 			get: getAndSet.get,
@@ -127,8 +97,8 @@ function factoryPackageUtilities(_) {
 	}
 
 	function deepCopy(o, useCloneMethod) {
-        // default options
-        useCloneMethod = isUndefined(useCloneMethod) ? true : useCloneMethod;
+		// default options
+		useCloneMethod = isUndefined(useCloneMethod) ? true : useCloneMethod;
 
 		// types to "just return"
 		if (isKindaUncloneable(o)) {
@@ -157,9 +127,9 @@ function factoryPackageUtilities(_) {
 	}
 
 	function addImmutablePropertyObject(o, name, childObj, isEnumerable, isConfigurable) {
-        // default options
-        isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
-        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+		// default options
+		isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
+		isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
 
 		var _obj = shallowCopy(childObj);
 		Object.defineProperty(o, name, {
@@ -170,9 +140,9 @@ function factoryPackageUtilities(_) {
 	}
 
 	function addMutablePropertyObject(o, name, _obj, isEnumerable, isConfigurable) {
-        // default options
-        isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
-        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+		// default options
+		isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
+		isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
 
 		Object.defineProperty(o, name, {
 			get: () => shallowCopy(_obj),
@@ -182,9 +152,9 @@ function factoryPackageUtilities(_) {
 	}
 
 	function addImmutablePropertyArray(o, name, arr, isEnumerable, isConfigurable) {
-        // default options
-        isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
-        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+		// default options
+		isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
+		isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
 
 		var _arr = arr.map(x => x);
 		Object.defineProperty(o, name, {
@@ -195,9 +165,9 @@ function factoryPackageUtilities(_) {
 	}
 
 	function addMutablePropertyArray(o, name, arr, isEnumerable, isConfigurable) {
-        // default options
-        isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
-        isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
+		// default options
+		isEnumerable = isUndefined(isEnumerable) ? true : isEnumerable;
+		isConfigurable = isUndefined(isConfigurable) ? false : isConfigurable;
 
 		Object.defineProperty(o, name, {
 			get: () => arr.map(x => x),
@@ -207,8 +177,8 @@ function factoryPackageUtilities(_) {
 	}
 
 	function getPrototypeElements(o, _payload) {
-        // default options
-        _payload = isUndefined(_payload) ? {} : _payload;
+		// default options
+		_payload = isUndefined(_payload) ? {} : _payload;
 
 		var oProto = Object.getPrototypeOf(o);
 		if (oProto) {
@@ -223,8 +193,8 @@ function factoryPackageUtilities(_) {
 	}
 
 	function filterObject(o, oFilter, inPlace) {
-        // default options
-        inPlace = isUndefined(inPlace) ? false : inPlace;
+		// default options
+		inPlace = isUndefined(inPlace) ? false : inPlace;
 
 		var ret = (inPlace) ? o : {};
 		_.forEach(o, function(v, k) {
@@ -242,8 +212,8 @@ function factoryPackageUtilities(_) {
 	}
 
 	function hasDuckTypeEquality(examinedDuck, sourceDuck, checkPrototypeChainEquality) {
-        // default options
-        checkPrototypeChainEquality = isUndefined(checkPrototypeChainEquality) ? false : checkPrototypeChainEquality;
+		// default options
+		checkPrototypeChainEquality = isUndefined(checkPrototypeChainEquality) ? false : checkPrototypeChainEquality;
 
 		if (!_.isObject(sourceDuck)) {
 			return typeof examinedDuck === typeof sourceDuck;
@@ -294,9 +264,9 @@ function factoryPackageUtilities(_) {
 		return true;
 	}
 
-	function updateDefaultOptionsWithInput(defaultOptions, inputOptions, failOnTypeMismatch) {
-        // default options
-        failOnTypeMismatch = isUndefined(failOnTypeMismatch) ? true : failOnTypeMismatch;
+	function updateDefaultOptionsWithInput(defaultOptions, inputOptions, failOnTypeMismatch = true) {
+		// default options
+		failOnTypeMismatch = isUndefined(failOnTypeMismatch) ? true : failOnTypeMismatch;
 
 		var myOptions = {};
 
@@ -304,7 +274,12 @@ function factoryPackageUtilities(_) {
 			var use_input = true;
 			if ((typeof inputOptions[k] !== "undefined") && !hasDuckTypeEquality(inputOptions[k], opt)) {
 				if (failOnTypeMismatch) {
-					throw new Meteor.Error('option-type-mismatch', "Option: " + k + "; Input: " + inputOptions[k] + "; Default: " + opt);
+					throw {
+						error: 'option-type-mismatch',
+						option: k,
+						input: inputOptions[k],
+						default: opt
+					};
 				}
 			}
 			if (typeof inputOptions[k] === "undefined") {
@@ -334,6 +309,7 @@ function factoryPackageUtilities(_) {
 		"filterObject": filterObject,
 		"shallowCopy": shallowCopy,
 		"deepCopy": deepCopy,
+		"isKindaUncloneable": isKindaUncloneable
 	}, function(fn, name) {
 		addImmutablePropertyFunction(o, name, fn);
 	});
