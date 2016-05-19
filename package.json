@@ -1,7 +1,7 @@
 {
   "name": "package-utils",
-  "version": "0.2.0",
-  "description": "",
+  "version": "0.2.1",
+  "description": "Simple utilities for handling object properties to support creating packages",
   "main": "_compiled",
   "repository": {
     "type": "git",
